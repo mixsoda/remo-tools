@@ -1,5 +1,7 @@
 # remo-tools
 
+![sample_images](https://github.com/mixsoda/remo-tools/blob/master/images/sample_figure.png?raw=true "sample")
+
 シェルスクリプトで書かれた Nature remo のためのユーティリティ群
 
 以下の機能を提供します。
