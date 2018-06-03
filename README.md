@@ -14,6 +14,10 @@
 # インストール方法
 準備中
 
+# Links
+- [Nature remo](https://nature.global/)
+- [Nature remo API documents](https://developer.nature.global/)
+
 # 謝辞
 以下のライブラリを使用しました
 - parsrj.sh :: JSONをパースするためのシェルスクリプト
