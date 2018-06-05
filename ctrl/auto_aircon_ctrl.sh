@@ -13,7 +13,7 @@ TRIGGER_TIME=0
 TRIGGER_MODE="OFF"
 
 #Trigger Conf.
-COOLER_TRIGGER_TEMP=25
+COOLER_TRIGGER_TEMP=28
 WARMER_TRIGGER_TEMP=15
 
 COOLER_SETTING=27
@@ -31,7 +31,7 @@ ON_HOLIDAY_AM_M=00
 ON_HOLIDAY_PM_H=18
 ON_HOLIDAY_PM_M=00
 
-#休みの日(土,日,祝日)かどうか調べる
+#check today is holiday(sat,sun,national holiday) or not
 TODAY=`date +"%Y-%m-%d"`
 DOW=`date +"%w"`
 JPHOLIDAY=`cat ../holiday.json | grep ${TODAY} | wc -l`
@@ -46,8 +46,8 @@ RTEMP=`../sensor/get_temp.sh  | cut -d'.' -f 1`
 RHU=`../sensor/get_hu.sh`
 RIL=`../sensor/get_il.sh  | cut -d'.' -f 1`
 
-#エアコン起動判定
-#温度
+#startup ditection
+#tempreture
 if [ ${RTEMP} -ge ${COOLER_TRIGGER_TEMP} ]; then 
     TRIGGER_MODE="COOLER"
 fi
@@ -57,7 +57,7 @@ fi
 
 #time
 if [ ${HOLIDAY} -eq 0 ]; then 
-    # 平日
+    # weekday
     ON_DAY_AM_UNIXTIME=`date +%s --date "${NOW_DATE} ${ON_DAY_AM_H}:${ON_DAY_AM_M}"`
     ON_DAY_PM_UNIXTIME=`date +%s --date "${NOW_DATE} ${ON_DAY_PM_H}:${ON_DAY_PM_M}"`
     if [ ${NOW_UNIXTIME} -ge ${ON_DAY_AM_UNIXTIME} ] && [ ${NOW_UNIXTIME} -le `expr ${ON_DAY_AM_UNIXTIME} + ${RETRY_TIME}` ]; then
@@ -67,7 +67,7 @@ if [ ${HOLIDAY} -eq 0 ]; then
         TRIGGER_TIME=1
     fi
 else
-    # 休日
+    # holiday
     ON_HOLIDAY_AM_UNIXTIME=`date +%s --date "${NOW_DATE} ${ON_HOLIDAY_AM_H}:${ON_HOLIDAY_AM_M}"`
     ON_HOLIDAY_PM_UNIXTIME=`date +%s --date "${NOW_DATE} ${ON_HOLIDAY_PM_H}:${ON_HOLIDAY_PM_M}"`
     if [ ${NOW_UNIXTIME} -ge ${ON_HOLIDAY_AM_UNIXTIME} ] && [ ${NOW_UNIXTIME} -le `expr ${ON_HOLIDAY_AM_UNIXTIME} + ${RETRY_TIME}` ]; then
@@ -85,18 +85,24 @@ if [ ${TRIGGER_TIME} -eq 0 ] || [ ${TRIGGER_MODE} = "OFF" ] ; then
     exit
 fi
 
-#エアコンのON/OFF状態を調べる
+#check state of air-con
 AIRCON_POWER=`./get_aircon_settings.sh button`
 if [ ${AIRCON_POWER} = "power-off" ]; then 
     AIRCON_POWER="OFF"
 else
     AIRCON_POWER="ON"
+    AIRCON_MODE=`./get_aircon_settings.sh mode`
+    AIRCON_TEMP=`./get_aircon_settings.sh temp`
 fi
 
 if [ ${AIRCON_POWER} = "OFF" ]; then 
     if [ ${TRIGGER_MODE} = "COOLER" ]; then
+        ./ctrl_aircon.sh on cool ${COOLER_SETTING}
         echo "[**COOLER-SEND**]" TRIGGER_MODE=${TRIGGER_MODE} COOLER_SETTING=${COOLER_SETTING} >> log.txt
     else
+        #./ctrl_aircon.sh on warm ${WARMER_SETTING}
         echo "[**WARMER-SEND**]" TRIGGER_MODE=${TRIGGER_MODE} WARMER_SETTING=${WARMER_SETTING} >> log.txt
     fi
+else
+    echo "[ALREADY_ON]" RUN_MODE=${AIRCON_MODE}, TEMP_SETTING=${AIRCON_TEMP} >> log.txt
 fi
