@@ -23,6 +23,7 @@ Nature Remoの公式APIを使えば、Remo内蔵のセンサーの値の取得�
 せっかく、Remoには温湿度計、照度計、人感センサーがついているので、ロギングしてグラフ化したい。
 
 # 特徴
+準備中
 
 # インストール方法
 準備中
@@ -33,4 +34,5 @@ Nature Remoの公式APIを使えば、Remo内蔵のセンサーの値の取得�
 
 # 謝辞
 以下のライブラリを使用しました
-- parsrj.sh :: JSONをパースするためのシェルスクリプト
+- [parsrj.sh](https://github.com/ShellShoccar-jpn/Parsrs) :: JSONをパースするためのシェルスクリプト
+- [holidays-jp](https://github.com/holidays-jp) :: 日本の国民の祝日をJSON形式で返すAPI
