@@ -1,4 +1,5 @@
 aircon_id.txt
 token.txt
 visualizer/*.txt
+.vscode
 *.json

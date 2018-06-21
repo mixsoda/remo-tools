@@ -1,50 +1,44 @@
+#
+# Nature remo sensor data visualizer
+#
+
+#import and initialize
 import numpy as np
 import pandas as pd
 import datetime as dt
+import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 
+plt.style.use('ggplot') 
 
 #read data from cvs to pandas data frame
-df = pd.read_csv('temp.txt', names=['time', 'temp'])
-df.time = pd.to_datetime(df.time,format='%Y-%m-%dT%H:%M:%SZ')
-df.time = df.time + dt.timedelta(hours=9)
+df_temp = pd.read_csv('temp.txt', names=['time', 'temp'])
+df_temp.time = pd.to_datetime(df_temp.time,format='%Y-%m-%dT%H:%M:%SZ')
+df_temp.time = df_temp.time + dt.timedelta(hours=9)
 
-df2 = pd.read_csv('hu.txt', names=['time', 'hu'])
-df2.time = pd.to_datetime(df2.time,format='%Y-%m-%dT%H:%M:%SZ')
-df2.time = df2.time + dt.timedelta(hours=9)
+df_hu = pd.read_csv('hu.txt', names=['time', 'hu'])
+df_hu.time = pd.to_datetime(df_hu.time,format='%Y-%m-%dT%H:%M:%SZ')
+df_hu.time = df_hu.time + dt.timedelta(hours=9)
+
+df_il = pd.read_csv('il.txt', names=['time', 'il'])
+df_il.time = pd.to_datetime(df_il.time,format='%Y-%m-%dT%H:%M:%SZ')
+df_il.time = df_il.time + dt.timedelta(hours=9)
+
+#data marge
+df = pd.merge(df_temp, df_hu, how='outer', on='time')
+df = pd.merge(df, df_il, how='outer', on='time')
+df = df.sort_values('time')
+df = df.reset_index(drop=True)
+df = df.interpolate().resample('8H', on='time').mean()
 
 #output stats
-print('Temperature::')
-print(df.describe())
-print('Humidity::')
-print(df2.describe())
+#print('Temperature::')
+#print(df_temp.describe())
+#print('Humidity::')
+#print(df2.describe())
 
 #plots
-fig = plt.figure()
-
-ax1 = fig.add_subplot(2,1,1)
-ax2 = fig.add_subplot(2,1,2)
-
-ax1.set_title('Living Room')
-ax2.set_xlabel('Time')
-
-#temperature
-ax1.plot(df['time'],df['temp'], color='red')
-ax1.set_ylabel('Temperature')
-ax1.set_ylim([10,30])
-
-
-#humidity
-ax2.plot(df2['time'],df2['hu'], color='blue')
-ax2.set_ylabel('Humidity')
-ax2.set_ylim([10,70])
-
-#layout x-axis
-days = mdates.AutoDateLocator()
-daysFmt = mdates.DateFormatter("%d %b")
-ax2.xaxis.set_major_locator(days)
-ax2.xaxis.set_major_formatter(daysFmt)
-fig.autofmt_xdate(rotation=45)
+df.plot(subplots=True, title='Nature Remo sensor data (all)')
 
 plt.show()
