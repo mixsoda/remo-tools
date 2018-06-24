@@ -5,6 +5,7 @@
 #import and initialize
 import numpy as np
 import pandas as pd
+from datetime import datetime
 import datetime as dt
 import matplotlib
 import matplotlib.pyplot as plt
@@ -28,17 +29,12 @@ df_il.time = df_il.time + dt.timedelta(hours=9)
 #data marge
 df = pd.merge(df_temp, df_hu, how='outer', on='time')
 df = pd.merge(df, df_il, how='outer', on='time')
-df = df.sort_values('time')
-df = df.reset_index(drop=True)
-df = df.interpolate().resample('8H', on='time').mean()
-
-#output stats
-#print('Temperature::')
-#print(df_temp.describe())
-#print('Humidity::')
-#print(df2.describe())
+df = df.sort_values(by='time').set_index('time')
+df_week = df[datetime.now()-dt.timedelta(weeks=1):datetime.now()]
+df = df.interpolate().resample('8H').mean().interpolate()
+df_week = df_week.interpolate()
 
 #plots
 df.plot(subplots=True, title='Nature Remo sensor data (all)')
-
+df_week.plot(subplots=True, title='Nature Remo sensor data (week)')
 plt.show()
