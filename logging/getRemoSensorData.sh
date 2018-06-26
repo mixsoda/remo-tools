@@ -25,8 +25,17 @@ il_updated=`../lib/parsrj.sh logs/out_rawdata.json | grep "newest_events.il.crea
 temp_value=`../lib/parsrj.sh logs/out_rawdata.json | grep "newest_events.te.val" | cut -d" " -f2`
 temp_updated=`../lib/parsrj.sh logs/out_rawdata.json | grep "newest_events.te.created_at" | cut -d" " -f2`
 
-#echo "humidity = $hu_value  (updated: $hu_updated )"
-#echo "tempreture = $temp_value (updated: $temp_updated )"
+#check state of air-con
+AIRCON_POWER=`../utils/get_aircon_settings.sh button`
+if [ ${AIRCON_POWER} = "power-off" ]; then 
+    AIRCON_POWER="OFF"
+    AIRCON_MODE="NaN"
+    AIRCON_TEMP="NaN"
+else
+    AIRCON_POWER="ON"
+    AIRCON_MODE=`../utils/get_aircon_settings.sh mode`
+    AIRCON_TEMP=`../utils/get_aircon_settings.sh temp`
+fi
 
 #output csv
 echo "$il_updated, $il_value" >> logs/il.txt
@@ -35,3 +44,5 @@ echo "$temp_updated, $temp_value" >> logs/temp.txt
 
 echo "$firm_date, $firm_var" >> logs/firmware.txt
 echo "$NOW, $sensor_num" >> logs/sensor_num.txt
+
+echo "$NOW, ${AIRCON_POWER}, ${AIRCON_MODE}, ${AIRCON_TEMP}" >> logs/aircon_state.txt
