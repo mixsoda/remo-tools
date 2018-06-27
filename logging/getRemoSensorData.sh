@@ -25,6 +25,13 @@ il_updated=`../lib/parsrj.sh logs/out_rawdata.json | grep "newest_events.il.crea
 temp_value=`../lib/parsrj.sh logs/out_rawdata.json | grep "newest_events.te.val" | cut -d" " -f2`
 temp_updated=`../lib/parsrj.sh logs/out_rawdata.json | grep "newest_events.te.created_at" | cut -d" " -f2`
 
+#get last updated time
+temp_lastupdated=`tail -n 1 logs/temp.txt | cut -d"," -f 1`
+hu_lastupdated=`tail -n 1 logs/hu.txt | cut -d"," -f 1`
+il_lastupdated=`tail -n 1 logs/il.txt | cut -d"," -f 1`
+firm_lastupdated=`tail -n 1 logs/firmware.txt | cut -d"," -f 1`
+sensor_lastnum=`tail -n 1 logs/sensor_num.txt | cut -d"," -f 2 | cut -c 2-2`
+
 #check state of air-con
 AIRCON_POWER=`../utils/get_aircon_settings.sh button`
 if [ ${AIRCON_POWER} = "power-off" ]; then 
@@ -38,11 +45,20 @@ else
 fi
 
 #output csv
-echo "$il_updated, $il_value" >> logs/il.txt
-echo "$hu_updated, $hu_value" >> logs/hu.txt
-echo "$temp_updated, $temp_value" >> logs/temp.txt
-
-echo "$firm_date, $firm_var" >> logs/firmware.txt
-echo "$NOW, $sensor_num" >> logs/sensor_num.txt
+if [ ${temp_updated} != ${temp_lastupdated} ]; then
+    echo "$temp_updated, $temp_value" >> logs/temp.txt
+fi
+if [ ${hu_updated} != ${hu_lastupdated} ]; then
+    echo "$hu_updated, $hu_value" >> logs/hu.txt
+fi
+if [ ${il_updated} != ${il_lastupdated} ]; then
+    echo "$il_updated, $il_value" >> logs/il.txt
+fi
+if [ ${firm_date} != ${firm_lastupdated} ]; then
+    echo "$firm_date, $firm_var" >> logs/firmware.txt
+fi
+if [ ${sensor_num} != ${sensor_lastnum} ]; then
+    echo "$NOW, $sensor_num" >> logs/sensor_num.txt
+fi
 
 echo "$NOW, ${AIRCON_POWER}, ${AIRCON_MODE}, ${AIRCON_TEMP}" >> logs/aircon_state.txt
