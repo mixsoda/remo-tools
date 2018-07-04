@@ -25,9 +25,9 @@ if [ ${DOW} -eq 0 -o ${DOW} -eq 6 -o ${JPHOLIDAY} -eq 1 ]; then
 fi
 
 #check room enviroment
-RTEMP=`../sensor/get_temp.sh  | cut -d'.' -f 1`
-RHU=`../sensor/get_hu.sh`
-RIL=`../sensor/get_il.sh  | cut -d'.' -f 1`
+RTEMP=`../logging/get_temp.sh  | cut -d'.' -f 1`
+RHU=`../logging/get_hu.sh`
+RIL=`../logging/get_il.sh  | cut -d'.' -f 1`
 
 #read config
 while read conf_str; do
