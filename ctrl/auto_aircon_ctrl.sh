@@ -4,32 +4,15 @@ cd ${CDIR}/
 
 TOKEN=`cat ../token.txt`
 TARGET_AIRCON_ID=`cat ../aircon_id.txt`
+CONF_FILE='ctrl_config.txt'
+
 NOW=`date +"%Y-%m-%dT%T"`
 NOW_DATE=`date +"%Y-%m-%d"`
 NOW_UNIXTIME=`date +%s`
 
 RETRY_TIME=615 #sec
-TRIGGER_TIME=0
-TRIGGER_MODE="OFF"
-
-#Trigger Conf.
-COOLER_TRIGGER_TEMP=28
-WARMER_TRIGGER_TEMP=15
-
-COOLER_SETTING=27
-WARMER_SETTING=18
-
-ON_DAY_AM_H=07
-ON_DAY_AM_M=45
-
-ON_DAY_PM_H=17
-ON_DAY_PM_M=45
-
-ON_HOLIDAY_AM_H=09
-ON_HOLIDAY_AM_M=00
-
-ON_HOLIDAY_PM_H=18
-ON_HOLIDAY_PM_M=00
+STARTUP_TIME=0
+REQUIRE_MODE="OFF"
 
 #check today is holiday(sat,sun,national holiday) or not
 TODAY=`date +"%Y-%m-%d"`
@@ -46,63 +29,86 @@ RTEMP=`../sensor/get_temp.sh  | cut -d'.' -f 1`
 RHU=`../sensor/get_hu.sh`
 RIL=`../sensor/get_il.sh  | cut -d'.' -f 1`
 
-#startup ditection
-#tempreture
-if [ ${RTEMP} -ge ${COOLER_TRIGGER_TEMP} ]; then 
-    TRIGGER_MODE="COOLER"
-fi
-if [ ${RTEMP} -le ${WARMER_TRIGGER_TEMP} ]; then 
-    TRIGGER_MODE="WARMER"
-fi
+#read config
+while read conf_str; do
+    #parse config
+    if [ `echo ${conf_str} | cut -c 1` = "#" ]; then
+        #echo "comment"
+        continue
+    fi
+    TRIGGER_DAY_TYPE=`echo ${conf_str} | cut -d',' -f 1`
+    TRIGGER_HOUR=`echo ${conf_str} | cut -d',' -f 2 | sed 's/^[ \t]*//'`
+    TRIGGER_MIN=`echo ${conf_str} | cut -d',' -f 3 | sed 's/^[ \t]*//'`
+    TRIGGER_TEMP=`echo ${conf_str} | cut -d',' -f 4 | sed -e 's/C$//g' | sed 's/^[ \t]*//'`
+    REQUEST_RUNMODE=`echo ${conf_str} | cut -d',' -f 5 | cut -d'-' -f 1 | sed 's/^[ \t]*//'`
+    REQUEST_RUNTEMP=`echo ${conf_str} | cut -d',' -f 5 | cut -d'-' -f 2 | sed -e 's/C$//g'  | sed 's/^[ \t]*//'`
 
-#time
-if [ ${HOLIDAY} -eq 0 ]; then 
-    # weekday
-    ON_DAY_AM_UNIXTIME=`date +%s --date "${NOW_DATE} ${ON_DAY_AM_H}:${ON_DAY_AM_M}"`
-    ON_DAY_PM_UNIXTIME=`date +%s --date "${NOW_DATE} ${ON_DAY_PM_H}:${ON_DAY_PM_M}"`
-    if [ ${NOW_UNIXTIME} -ge ${ON_DAY_AM_UNIXTIME} ] && [ ${NOW_UNIXTIME} -le `expr ${ON_DAY_AM_UNIXTIME} + ${RETRY_TIME}` ]; then
-        TRIGGER_TIME=1
+    case "${TRIGGER_DAY_TYPE}" in
+        "WEEK_DAY" )  TRIGGER_DAY_TYPE=0 ;;
+        "HOLIDAY" ) TRIGGER_DAY_TYPE=1 ;;
+        * ) echo "[READ_CONF_ERROR]" TIME=${NOW}, TRIGGER_DAY_TYPE=${TRIGGER_DAY_TYPE}  >> log.txt
+            exit ;;
+    esac
+    
+    #check time trigger
+    STARTUP_UNIXTIME=`date +%s --date "${NOW_DATE} ${TRIGGER_HOUR}:${TRIGGER_MIN}"`
+    if [ ${NOW_UNIXTIME} -ge ${STARTUP_UNIXTIME} ] && [ ${NOW_UNIXTIME} -le `expr ${STARTUP_UNIXTIME} + ${RETRY_TIME}` ]; then
+        STARTUP_TIME=1
     fi
-    if [ ${NOW_UNIXTIME} -ge ${ON_DAY_PM_UNIXTIME} ] && [ ${NOW_UNIXTIME} -le `expr ${ON_DAY_PM_UNIXTIME} + ${RETRY_TIME}` ]; then
-        TRIGGER_TIME=1
+
+    #check temp trigger
+    if [ ${REQUEST_RUNMODE} = "COOLER" ] && [ ${RTEMP} -ge ${TRIGGER_TEMP} ]; then 
+        REQUIRE_MODE="COOLER"
     fi
-else
-    # holiday
-    ON_HOLIDAY_AM_UNIXTIME=`date +%s --date "${NOW_DATE} ${ON_HOLIDAY_AM_H}:${ON_HOLIDAY_AM_M}"`
-    ON_HOLIDAY_PM_UNIXTIME=`date +%s --date "${NOW_DATE} ${ON_HOLIDAY_PM_H}:${ON_HOLIDAY_PM_M}"`
-    if [ ${NOW_UNIXTIME} -ge ${ON_HOLIDAY_AM_UNIXTIME} ] && [ ${NOW_UNIXTIME} -le `expr ${ON_HOLIDAY_AM_UNIXTIME} + ${RETRY_TIME}` ]; then
-        TRIGGER_TIME=1
+    if [ ${REQUEST_RUNMODE} = "WARMER" ] && [ ${RTEMP} -le ${TRIGGER_TEMP} ]; then 
+        REQUIRE_MODE="WARMER"
     fi
-    if [ ${NOW_UNIXTIME} -ge ${ON_HOLIDAY_PM_UNIXTIME} ] && [ ${NOW_UNIXTIME} -le `expr ${ON_HOLIDAY_PM_UNIXTIME} + ${RETRY_TIME}` ]; then
-        TRIGGER_TIME=0
+
+    #Logging
+    #echo "[DEBUG_TRIGGER]" DAY_TYPE=${TRIGGER_DAY_TYPE}, HOUR=${TRIGGER_HOUR}, MIN=${TRIGGER_MIN}, TEMP=${TRIGGER_TEMP}, RUNMODE=${REQUEST_RUNMODE}, RUNTEMP=${REQUEST_RUNTEMP} >> log.txt
+
+    #check signal send conditions (date, time, temp)
+    if [ ${HOLIDAY} -ne ${TRIGGER_DAY_TYPE} ] || [ ${STARTUP_TIME} -eq 0 ] || [ ${REQUIRE_MODE} = "OFF" ] ; then 
+        continue
     fi
-fi
+
+    #check state of air-con
+    AIRCON_POWER=`./get_aircon_settings.sh button`
+    if [ ${AIRCON_POWER} = "power-off" ]; then 
+        AIRCON_POWER="OFF"
+    else
+        AIRCON_POWER="ON"
+        AIRCON_MODE=`./get_aircon_settings.sh mode`
+        AIRCON_TEMP=`./get_aircon_settings.sh temp`
+    fi
+
+    #send IR-signal
+    if [ ${AIRCON_POWER} = "OFF" ]; then 
+        if [ ${REQUIRE_MODE} = "COOLER" ]; then
+            ./ctrl_aircon.sh on cool ${REQUEST_RUNTEMP}
+            echo "[**COOLER-SEND**]" TIME=${NOW}, REQUIRE_MODE=${REQUIRE_MODE} REQUEST_RUNTEMP=${REQUEST_RUNTEMP} >> log.txt
+            exit
+        else
+            #./ctrl_aircon.sh on warm ${REQUEST_RUNTEMP}
+            echo "[**WARMER-SEND**]" TIME=${NOW}, REQUIRE_MODE=${REQUIRE_MODE} REQUEST_RUNTEMP=${REQUEST_RUNTEMP} >> log.txt
+            #exit
+        fi
+    else
+        if [ ${AIRCON_MODE} = ${REQUIRE_MODE} ] && [ ${AIRCON_TEMP} = ${REQUEST_RUNTEMP} ] ; then
+            echo "[ALREADY_RUN_REQUIRE_SETTING]" TIME=${NOW}, RUN_MODE=${AIRCON_MODE}, AIRCON_TEMP=${AIRCON_TEMP} >> log.txt
+        else
+            if [ ${REQUIRE_MODE} = "COOLER" ]; then
+                ./ctrl_aircon.sh on cool ${REQUEST_RUNTEMP}
+                echo "[**COOLER-TEMP-CHANGE**]" TIME=${NOW}, RUN_MODE=${AIRCON_MODE}, AIRCON_TEMP=${AIRCON_TEMP} >> log.txt
+                exit
+            else
+                #./ctrl_aircon.sh on warm ${REQUEST_RUNTEMP}
+                echo "[**WARMER-TEMP-CHANGE**]" TIME=${NOW}, RUN_MODE=${AIRCON_MODE}, AIRCON_TEMP=${AIRCON_TEMP} >> log.txt
+                #exit
+            fi
+        fi
+    fi
+done < ${CONF_FILE}
 
 #Logging
-echo "[CHECK]" TIME=${NOW}, HOLIDAY=${HOLIDAY}, RT=${RTEMP}, RH=${RHU}, RIL=${RIL}, TRIGGER_TIME=${TRIGGER_TIME}, TRIGGER_MODE=${TRIGGER_MODE} >> log.txt
-
-if [ ${TRIGGER_TIME} -eq 0 ] || [ ${TRIGGER_MODE} = "OFF" ] ; then 
-    exit
-fi
-
-#check state of air-con
-AIRCON_POWER=`./get_aircon_settings.sh button`
-if [ ${AIRCON_POWER} = "power-off" ]; then 
-    AIRCON_POWER="OFF"
-else
-    AIRCON_POWER="ON"
-    AIRCON_MODE=`./get_aircon_settings.sh mode`
-    AIRCON_TEMP=`./get_aircon_settings.sh temp`
-fi
-
-if [ ${AIRCON_POWER} = "OFF" ]; then 
-    if [ ${TRIGGER_MODE} = "COOLER" ]; then
-        ./ctrl_aircon.sh on cool ${COOLER_SETTING}
-        echo "[**COOLER-SEND**]" TRIGGER_MODE=${TRIGGER_MODE} COOLER_SETTING=${COOLER_SETTING} >> log.txt
-    else
-        #./ctrl_aircon.sh on warm ${WARMER_SETTING}
-        echo "[**WARMER-SEND**]" TRIGGER_MODE=${TRIGGER_MODE} WARMER_SETTING=${WARMER_SETTING} >> log.txt
-    fi
-else
-    echo "[ALREADY_ON]" RUN_MODE=${AIRCON_MODE}, TEMP_SETTING=${AIRCON_TEMP} >> log.txt
-fi
+echo "[CHECK]" TIME=${NOW}, HOLIDAY=${HOLIDAY}, RT=${RTEMP}, RH=${RHU}, RIL=${RIL}, STARTUP_TIME=${STARTUP_TIME}, REQUIRE_MODE=${REQUIRE_MODE} >> log.txt
