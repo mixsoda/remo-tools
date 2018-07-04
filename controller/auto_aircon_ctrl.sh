@@ -5,6 +5,7 @@ cd ${CDIR}/
 TOKEN=`cat ../token.txt`
 TARGET_AIRCON_ID=`cat ../aircon_id.txt`
 CONF_FILE='ctrl_config.txt'
+LOG_FILE=logs/log_`date +"%Y%m%d"`.txt
 
 NOW=`date +"%Y-%m-%dT%T"`
 NOW_DATE=`date +"%Y-%m-%d"`
@@ -46,7 +47,7 @@ while read conf_str; do
     case "${TRIGGER_DAY_TYPE}" in
         "WEEK_DAY" )  TRIGGER_DAY_TYPE=0 ;;
         "HOLIDAY" ) TRIGGER_DAY_TYPE=1 ;;
-        * ) echo "[READ_CONF_ERROR]" TIME=${NOW}, TRIGGER_DAY_TYPE=${TRIGGER_DAY_TYPE}  >> log.txt
+        * ) echo "[READ_CONF_ERROR]" TIME=${NOW}, TRIGGER_DAY_TYPE=${TRIGGER_DAY_TYPE}  >> ${LOG_FILE}
             exit ;;
     esac
     
@@ -65,7 +66,7 @@ while read conf_str; do
     fi
 
     #Logging
-    #echo "[DEBUG_TRIGGER]" DAY_TYPE=${TRIGGER_DAY_TYPE}, HOUR=${TRIGGER_HOUR}, MIN=${TRIGGER_MIN}, TEMP=${TRIGGER_TEMP}, RUNMODE=${REQUEST_RUNMODE}, RUNTEMP=${REQUEST_RUNTEMP} >> log.txt
+    #echo "[DEBUG_TRIGGER]" DAY_TYPE=${TRIGGER_DAY_TYPE}, HOUR=${TRIGGER_HOUR}, MIN=${TRIGGER_MIN}, TEMP=${TRIGGER_TEMP}, RUNMODE=${REQUEST_RUNMODE}, RUNTEMP=${REQUEST_RUNTEMP} >> ${LOG_FILE}
 
     #check signal send conditions (date, time, temp)
     if [ ${HOLIDAY} -ne ${TRIGGER_DAY_TYPE} ] || [ ${STARTUP_TIME} -eq 0 ] || [ ${REQUIRE_MODE} = "OFF" ] ; then 
@@ -86,24 +87,24 @@ while read conf_str; do
     if [ ${AIRCON_POWER} = "OFF" ]; then 
         if [ ${REQUIRE_MODE} = "COOLER" ]; then
             ./ctrl_aircon.sh on cool ${REQUEST_RUNTEMP}
-            echo "[**COOLER-SEND**]" TIME=${NOW}, REQUIRE_MODE=${REQUIRE_MODE} REQUEST_RUNTEMP=${REQUEST_RUNTEMP} >> log.txt
+            echo "[**COOLER-SEND**]" TIME=${NOW}, REQUIRE_MODE=${REQUIRE_MODE} REQUEST_RUNTEMP=${REQUEST_RUNTEMP} >> ${LOG_FILE}
             exit
         else
             #./ctrl_aircon.sh on warm ${REQUEST_RUNTEMP}
-            echo "[**WARMER-SEND**]" TIME=${NOW}, REQUIRE_MODE=${REQUIRE_MODE} REQUEST_RUNTEMP=${REQUEST_RUNTEMP} >> log.txt
+            echo "[**WARMER-SEND**]" TIME=${NOW}, REQUIRE_MODE=${REQUIRE_MODE} REQUEST_RUNTEMP=${REQUEST_RUNTEMP} >> ${LOG_FILE}
             #exit
         fi
     else
         if [ ${AIRCON_MODE} = ${REQUIRE_MODE} ] && [ ${AIRCON_TEMP} = ${REQUEST_RUNTEMP} ] ; then
-            echo "[ALREADY_RUN_REQUIRE_SETTING]" TIME=${NOW}, RUN_MODE=${AIRCON_MODE}, AIRCON_TEMP=${AIRCON_TEMP} >> log.txt
+            echo "[ALREADY_RUN_REQUIRE_SETTING]" TIME=${NOW}, RUN_MODE=${AIRCON_MODE}, AIRCON_TEMP=${AIRCON_TEMP} >> ${LOG_FILE}
         else
             if [ ${REQUIRE_MODE} = "COOLER" ]; then
                 ./ctrl_aircon.sh on cool ${REQUEST_RUNTEMP}
-                echo "[**COOLER-TEMP-CHANGE**]" TIME=${NOW}, RUN_MODE=${AIRCON_MODE}, AIRCON_TEMP=${AIRCON_TEMP} >> log.txt
+                echo "[**COOLER-TEMP-CHANGE**]" TIME=${NOW}, RUN_MODE=${AIRCON_MODE}, AIRCON_TEMP=${AIRCON_TEMP} >> ${LOG_FILE}
                 exit
             else
                 #./ctrl_aircon.sh on warm ${REQUEST_RUNTEMP}
-                echo "[**WARMER-TEMP-CHANGE**]" TIME=${NOW}, RUN_MODE=${AIRCON_MODE}, AIRCON_TEMP=${AIRCON_TEMP} >> log.txt
+                echo "[**WARMER-TEMP-CHANGE**]" TIME=${NOW}, RUN_MODE=${AIRCON_MODE}, AIRCON_TEMP=${AIRCON_TEMP} >> ${LOG_FILE}
                 #exit
             fi
         fi
@@ -111,4 +112,4 @@ while read conf_str; do
 done < ${CONF_FILE}
 
 #Logging
-echo "[CHECK]" TIME=${NOW}, HOLIDAY=${HOLIDAY}, RT=${RTEMP}, RH=${RHU}, RIL=${RIL}, STARTUP_TIME=${STARTUP_TIME}, REQUIRE_MODE=${REQUIRE_MODE} >> log.txt
+echo "[CHECK]" TIME=${NOW}, HOLIDAY=${HOLIDAY}, RT=${RTEMP}, RH=${RHU}, RIL=${RIL}, STARTUP_TIME=${STARTUP_TIME}, REQUIRE_MODE=${REQUIRE_MODE} >> ${LOG_FILE}
