@@ -41,7 +41,10 @@ if [ ${AIRCON_POWER} = "power-off" ]; then
 else
     AIRCON_POWER="ON"
     AIRCON_MODE=`../utils/get_aircon_settings.sh mode`
-    AIRCON_TEMP=`../utils/get_aircon_settings.sh temp`
+    AIRCON_TEMP="NaN"
+    if [ ${AIRCON_MODE} == "cool" ] || [ ${AIRCON_MODE} == "warm" ]; then
+        AIRCON_TEMP=`../utils/get_aircon_settings.sh temp`
+    fi
 fi
 
 #output csv
