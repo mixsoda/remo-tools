@@ -1,38 +1,64 @@
 # remo-tools
-シェルスクリプトで書かれた Nature remo のためのユーティリティ群
+ Nature remo のためのPythonとシェルスクリプトで書かれたマルチプラットフォームなユーティリティ
+
 ![sample_images](https://github.com/mixsoda/remo-tools/blob/master/images/sample_figure.png?raw=true "sample")
+
 
 以下の機能を提供します。
 1. Self-hostedなサーバ上でのセンサーデータのロギング
 2. ロギングしたセンサーデータの可視化
-3. 温度センサーと連動したエアコン自動コントローラ
+3. 複雑なルールが設定できるエアコン自動コントローラ
 
-# 動機
-## スマートなエアコン制御
-Nature Remoでやりたいことは、「家に帰ってきたときに部屋を適温にしておきたい」なんだけど、
-Nature Remo+標準アプリやNature Remo+IFTTTだと、トリガー条件が貧弱でこれがなかなか難しい。
+## 動機
+### センサーデータのロギング
+Nature remoに搭載されている各種センサーデータを定期的にロギングしたい。
 
-「平日で室温が28度以上なら、17:45にエアコンをつける。ただし、祝日は除く。」
-
-みたいに、2018年6月現在、センサーとの連携やきめ細やかなスケジュール設定をすることができない。
-
-Nature Remoの公式APIを使えば、Remo内蔵のセンサーの値の取得やエアコン制御が可能なので、
-人手を介さずエアコンを自動制御したい。
-
-## センサーデータの可視化
+### センサーデータの可視化
 せっかく、Remoには温湿度計、照度計、人感センサーがついているので、ロギングしてグラフ化したい。
 
-# 特徴
-準備中
+### スマートなエアコン制御
+Nature Remoの標準アプリでは複雑なルール設定ができない。
+「平日で室温が28度以上なら、17:45にエアコンをつける。ただし、祝日は除く。」
+みたいな、きめ細やかなスケジュール設定を行いたい。
 
-# インストール方法
-準備中
+## 特徴
+ロギングツールはシェルスクリプトで書かれているので（bashさえ動けば）どこででも動く。
+例えば、NAS上でも動作可能。
 
-# Links
+ロギングしたデータをもとにセンサーデータをコマンド一発で可視化できる
+Python+Pandas+matplotlibで書かれているので改変も簡単
+
+テキストファイルにルールを記載するだけで、Remo標準アプリより柔軟なエアコン制御が可能
+
+## インストール方法 / 使用方法
+### 前提
+別途APIキーを取得しておいてください。
+
+### ロギングツールのインストール
+1. サーバ上にインストール用のディレクトリ（例えば/path/to/remo-tools/)を作成する。
+2. ダウンロードしたファイルの中のlogging, lib, utilsディレクトリをコピー
+3. logging/*.sh, lib/*.shに実行権限付与
+4. logging/ディレクトリの直下にlogs/ディレクトリを作成
+5. logging/getRemoSensorData.shをcronに登録
+（例：*/15 * * * * /path/to/remo-tool/logging/getRemoSensorData.sh）
+
+### 可視化ツール
+（準備中）
+
+### 制御ツール
+（準備中）
+
+## Gallery
+可視化結果例
+(準備中)
+
+## Links
 - [Nature remo](https://nature.global/)
 - [Nature remo API documents](https://developer.nature.global/)
 
-# 謝辞
+## Licence
+
+## 謝辞
 以下のライブラリを使用しました
 - [parsrj.sh](https://github.com/ShellShoccar-jpn/Parsrs) :: JSONをパースするためのシェルスクリプト
 - [holidays-jp](https://github.com/holidays-jp) :: 日本の国民の祝日をJSON形式で返すAPI
