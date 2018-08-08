@@ -22,7 +22,7 @@ df.time = df.time + dt.timedelta(hours=9)
 df = df.set_index('time')
 df2 = df.groupby(pd.Grouper(freq='1D'))
 
-#%%
+
 optime_count = df2["mode"].value_counts()
 optime_cool = pd.DataFrame([], columns=['cool'])
 optime_dry = pd.DataFrame([], columns=['dry'])
@@ -44,7 +44,7 @@ optime = optime_cool.join(optime_dry, how='outer').join(optime_warm, how='outer'
 #print(optime)
 
 #%%
-ax = optime.plot(kind='bar', color=['steelblue', 'lightsteelblue', 'tomato'], stacked=True)
-ax.set_xticklabels(optime.index.strftime('%d-%b(%a)'))
+ax = optime.plot(kind='area', color=['steelblue', 'lightsteelblue', 'tomato'], stacked=True)
+#ax.set_xticklabels(optime.index.strftime('%d-%b(%a)'))
 ax.set_ylabel('Operating time (hour)')
 plt.show()
