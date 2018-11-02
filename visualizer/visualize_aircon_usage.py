@@ -44,7 +44,8 @@ optime = optime_cool.join(optime_dry, how='outer').join(optime_warm, how='outer'
 #print(optime)
 
 #%%
-ax = optime.plot(kind='area', color=['steelblue', 'lightsteelblue', 'tomato'], stacked=True)
+ax = optime.plot(kind='area', color=['steelblue', 'lightsteelblue', 'tomato'], stacked=True,linewidth = 0.0)
 #ax.set_xticklabels(optime.index.strftime('%d-%b(%a)'))
 ax.set_ylabel('Operating time (hour)')
+plt.savefig("visualize_aircon_uptime_"+str(dt.date.today())+".png")
 plt.show()

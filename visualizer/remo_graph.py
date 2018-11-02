@@ -43,6 +43,8 @@ df_week = df_week.interpolate()
 
 #plots
 df.plot(subplots=True, title='Nature Remo sensor data (all)')
+plt.savefig("visualize_sensor_data_all_"+str(dt.date.today())+".png")
 df_week.plot(subplots=True, title='Nature Remo sensor data (week)')
+plt.savefig("visualize_sensor_data_week_"+str(dt.date.today())+".png")
 #df_il.plot()
 plt.show()
