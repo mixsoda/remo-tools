@@ -1,20 +1,17 @@
 # remo-tools
- Nature remo のためのPythonとシェルスクリプトで書かれたマルチプラットフォームなユーティリティ
+ グラフマニアでNature remoユーザな人のためのユーティリティ
 
-![sample_images](https://github.com/mixsoda/remo-tools/blob/master/images/sample_figure.png?raw=true "sample")
+![sample_images](https://github.com/mixsoda/remo-tools/blob/master/images/visualize_sensor_data_all.png?raw=true "sample")
 
 
 以下の機能を提供します。
-1. Self-hostedなサーバ上でのセンサーデータのロギング
-2. ロギングしたセンサーデータの可視化
+1. 各種センサーデータ（温度、湿度、照度）のロギング
+2. ロギングしたセンサーデータのグラフ化
 3. 複雑なルールが設定できるエアコン自動コントローラ
 
 ## 動機
-### センサーデータのロギング
-Nature remoに搭載されている各種センサーデータを定期的にロギングしたい。
-
-### センサーデータの可視化
-せっかく、Remoには温湿度計、照度計、人感センサーがついているので、ロギングしてグラフ化したい。
+### センサーデータのロギングとグラフ化
+Nature remoに搭載されている各種センサーデータを定期的にロギングしてグラフ化したい。
 
 ### スマートなエアコン制御
 Nature Remoの標準アプリでは複雑なルール設定ができない。
@@ -22,12 +19,15 @@ Nature Remoの標準アプリでは複雑なルール設定ができない。
 みたいな、きめ細やかなスケジュール設定を行いたい。
 
 ## 特徴
+### マルチプラットフォーム
 ロギングツールはシェルスクリプトで書かれているので（bashさえ動けば）どこででも動く。
 例えば、NAS上でも動作可能。
 
+### Python製グラフ化ツール
 ロギングしたデータをもとにセンサーデータをコマンド一発で可視化できる
 Python+Pandas+matplotlibで書かれているので改変も簡単
 
+### 日本の祝日に対応したルールベースのエアコン制御ツール
 テキストファイルにルールを記載するだけで、Remo標準アプリより柔軟なエアコン制御が可能
 
 ## インストール方法 / 使用方法
@@ -43,7 +43,27 @@ Python+Pandas+matplotlibで書かれているので改変も簡単
 （例：*/15 * * * * /path/to/remo-tool/logging/getRemoSensorData.sh）
 
 ### 可視化ツール
-（準備中）
+ツールは全部visualizeディレクトリに入っている。まず、
+/path/to/remo-tool/logging/logs/ディレクトリにある
+- temp.txt
+- hu.txt
+- il.txt
+- aircon_state.txt
+
+をvisualizeディレクトリにコピーする。
+
+Remoのセンサーで取得されたデータを可視化するには、
+```bash
+python remo_graph.py
+```
+を実行する。
+
+エアコンの使用時間をグラフ化するには、
+```bash
+python remo_graph.py
+```
+を実行する。具体的にどんなグラフが作成されるかは、下の「Gallery」を参照。
+
 
 ### 制御ツール
 （準備中）
