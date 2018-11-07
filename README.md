@@ -70,7 +70,17 @@ python remo_graph.py
 
 ## Gallery
 可視化結果例
-(準備中)
+記録された温度、湿度、照度計のすべてのデータをグラフ化した結果。
+
+![sample_images](https://github.com/mixsoda/remo-tools/blob/master/images/visualize_sensor_data_all.png?raw=true "sample")
+
+直近一週間分だけ拡大してグラフ化した結果。
+
+![sample_images](https://github.com/mixsoda/remo-tools/blob/master/images/visualize_sensor_data_week.png?raw=true "sample")
+
+エアコンの
+
+![sample_images](https://github.com/mixsoda/remo-tools/blob/master/images/air-con_optime.png?raw=true "sample")
 
 ## Links
 - [Nature remo](https://nature.global/)
