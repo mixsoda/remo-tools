@@ -1,5 +1,5 @@
 # remo-tools
- グラフマニアでNature remoユーザな人のためのユーティリティ
+ グラフマニアかつ自動化マニアでNature remoユーザな人のためのユーティリティ
 
 ![sample_images](https://github.com/mixsoda/remo-tools/blob/master/images/visualize_sensor_data_all.png?raw=true "sample")
 
@@ -21,7 +21,7 @@ Nature Remoの標準アプリでは複雑なルール設定ができない。
 ## 特徴
 ### マルチプラットフォーム
 ロギングツールはシェルスクリプトで書かれているので（bashさえ動けば）どこででも動く。
-例えば、NAS上でも動作可能。
+例えば、NAS上でも動作可能。(QNAPのNASで動作検証済み)
 
 ### Python製グラフ化ツール
 ロギングしたデータをもとにセンサーデータをコマンド一発で可視化できる
@@ -78,9 +78,11 @@ python remo_graph.py
 
 ![sample_images](https://github.com/mixsoda/remo-tools/blob/master/images/visualize_sensor_data_week.png?raw=true "sample")
 
-エアコンの
+一日のエアコン使用時間の変化。
 
 ![sample_images](https://github.com/mixsoda/remo-tools/blob/master/images/air-con_optime.png?raw=true "sample")
+
+最近、暖房使い始めた。２年ぐらい記録して比較すると面白いかもしれない。
 
 ## Links
 - [Nature remo](https://nature.global/)
