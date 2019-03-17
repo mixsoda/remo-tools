@@ -12,7 +12,8 @@ import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 
-plt.style.use('ggplot') 
+#plt.style.use('ggplot') 
+plt.style.use('dark_background') 
 
 #read data from cvs to pandas data frame
 df_temp = pd.read_csv('temp.txt', names=['time', 'temp'])
