@@ -1,6 +1,4 @@
 #!/bin/bash
-#
-
 CDIR=`dirname ${0}`
 cd ${CDIR}/
 

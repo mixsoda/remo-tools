@@ -74,7 +74,7 @@ while read conf_str; do
     if [ ${HOLIDAY} -ne ${TRIGGER_DAY_TYPE} ] || [ ${STARTUP_TIME} -eq 0 ] || [ ${REQUEST_RUNMODE} != ${REQUIRE_MODE} ] ; then 
         continue
     fi
-    #echo "[DEBUG_TRIGGER2]" DAY_TYPE=${TRIGGER_DAY_TYPE}, HOUR=${TRIGGER_HOUR}, MIN=${TRIGGER_MIN}, TRIGGER_TEMP=${TRIGGER_TEMP}, RUNMODE=${REQUEST_RUNMODE}, RUNTEMP=${REQUEST_RUNTEMP} >> ${LOG_FILE}
+    #echo "[DEBUG_TRIGGER2]" DAY_TYPE=${TRIGGER_DAY_TYPE}, HOUR=${TRIGGER_HOUR}, MIN=${TRIGGER_MIN}, TEMP=${TRIGGER_TEMP}, RUNMODE=${REQUEST_RUNMODE}, RUNTEMP=${REQUEST_RUNTEMP} >> ${LOG_FILE}
 
     #check air-con state
     AIRCON_POWER=`./get_aircon_settings.sh button`
@@ -98,9 +98,9 @@ while read conf_str; do
             echo "[**COOLER-SEND**]" TIME=${NOW}, REQUIRE_MODE=${REQUIRE_MODE} REQUEST_RUNTEMP=${REQUEST_RUNTEMP} >> ${LOG_FILE}
             exit
         elif [ ${REQUIRE_MODE} = "WARMER" ]; then
-            #./ctrl_aircon.sh on warm ${REQUEST_RUNTEMP}
+            ./ctrl_aircon.sh on warm ${REQUEST_RUNTEMP}
             echo "[**WARMER-SEND**]" TIME=${NOW}, REQUIRE_MODE=${REQUIRE_MODE} REQUEST_RUNTEMP=${REQUEST_RUNTEMP} >> ${LOG_FILE}
-            #exit
+            exit
         fi
     else
         if [ ${REQUEST_RUNMODE} = "OFF" ]; then
@@ -116,9 +116,9 @@ while read conf_str; do
                 echo "[**COOLER-TEMP-CHANGE**]" TIME=${NOW}, REQUIRE_MODE=${REQUIRE_MODE}, REQUEST_RUNTEMP=${REQUEST_RUNTEMP} >> ${LOG_FILE}
                 exit
             elif [ ${REQUIRE_MODE} = "WARMER" ]; then
-                #./ctrl_aircon.sh on warm ${REQUEST_RUNTEMP}
+                ./ctrl_aircon.sh on warm ${REQUEST_RUNTEMP}
                 echo "[**WARMER-TEMP-CHANGE**]" TIME=${NOW}, REQUIRE_MODE=${REQUIRE_MODE}, REQUEST_RUNTEMP=${REQUEST_RUNTEMP} >> ${LOG_FILE}
-                #exit
+                exit
             fi
         fi
     fi
