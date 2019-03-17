@@ -1,0 +1,4 @@
+off,air-cleaner-poweroff-signalID-here
+on,air-cleaner-poweron-signalID-here
+turbo,air-cleaner-swich-turbomode-signalID-here
+timer,air-cleaner-enable-autopoweroff-signalID-here
