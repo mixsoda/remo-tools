@@ -22,12 +22,18 @@ if [ ${DOW} -eq 0 -o ${DOW} -eq 6 -o ${JPHOLIDAY} -eq 1 ]; then
     HOLIDAY=1
 fi
 
+#initialize
+STARTUP_TIME=0
+TURN_ON_FLAG=0
+
+#check kafun alert flag
+LAST_KAFUN_ALERT_DATE=`tail -n 1 ${ALERT_FILE}`
+if [ ${LAST_KAFUN_ALERT_DATE} = ${NOW_DATE} ]; then
+    TURN_ON_FLAG=1
+fi
+
 #read config
 while read conf_str; do
-    #initialize
-    STARTUP_TIME=0
-    TURN_ON_FLAG=0
-    
     #parse config
     if [ `echo ${conf_str} | cut -c 1` = "#" ]; then
         #echo "comment"
@@ -49,13 +55,6 @@ while read conf_str; do
     if [ ${NOW_UNIXTIME} -ge ${STARTUP_UNIXTIME} ] && [ ${NOW_UNIXTIME} -le `expr ${STARTUP_UNIXTIME} + ${RETRY_TIME}` ]; then
         STARTUP_TIME=1
     fi
-
-    #check kafun alert flag
-    LAST_KAFUN_ALERT_DATE=`tail -n 1 ${ALERT_FILE}`
-    if [ ${LAST_KAFUN_ALERT_DATE} = ${NOW_DATE} ]; then
-        TURN_ON_FLAG=1
-    fi
-
 done < ${CONF_FILE}
 
 #send IR Signal
