@@ -52,17 +52,31 @@ while read conf_str; do
     
     #check time trigger
     STARTUP_UNIXTIME=`date +%s --date "${NOW_DATE} ${TRIGGER_HOUR}:${TRIGGER_MIN}"`
-    if [ ${NOW_UNIXTIME} -ge ${STARTUP_UNIXTIME} ] && [ ${NOW_UNIXTIME} -le `expr ${STARTUP_UNIXTIME} + ${RETRY_TIME}` ]; then
+    if [ ${TRIGGER_DAY_TYPE} -eq ${HOLIDAY} ] && [ ${NOW_UNIXTIME} -ge ${STARTUP_UNIXTIME} ] && [ ${NOW_UNIXTIME} -le `expr ${STARTUP_UNIXTIME} + ${RETRY_TIME}` ]; then
         STARTUP_TIME=1
+    fi
+
+    #set send signal type
+    if [ ${STARTUP_TIME} -eq 1 ]; then 
+        TRIGGER_MODE=`echo ${conf_str} | cut -d',' -f 4 | sed 's/^[ \t]*//'`
     fi
 done < ${CONF_FILE}
 
 #send IR Signal
-if [ ${STARTUP_TIME} -eq 1 ] && [ ${TURN_ON_FLAG} -eq 1 ]; then 
-    ./ctrl_aircleaner.sh on
-    sleep 10
-    ./ctrl_aircleaner.sh turbo
-    echo "[**STARTUP-AIR-CLEANER**]" TIME=${NOW} >> ${LOG_FILE}
+if [ ${STARTUP_TIME} -eq 1 ] && [ ${TURN_ON_FLAG} -eq 1 ]; then
+    case "${TRIGGER_MODE}" in
+        "on" )
+            ./ctrl_aircleaner.sh on
+            echo "[**STARTUP-AIR-CLEANER**]" TIME=${NOW} MODE=${TRIGGER_MODE} >> ${LOG_FILE} ;;
+        "turbo" )
+            ./ctrl_aircleaner.sh on
+            sleep 10
+            ./ctrl_aircleaner.sh turbo
+            echo "[**STARTUP-AIR-CLEANER-TURBO**]" TIME=${NOW} MODE=${TRIGGER_MODE} >> ${LOG_FILE} ;;
+        "auto_off" )
+            ./ctrl_aircleaner.sh auto_off
+            echo "[**ENABLE AUTO-OFF-TIMER**]" TIME=${NOW} MODE=${TRIGGER_MODE} >> ${LOG_FILE} ;;
+    esac
 fi
 
 #Logging
