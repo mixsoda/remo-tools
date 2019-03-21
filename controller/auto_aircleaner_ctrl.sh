@@ -40,8 +40,8 @@ while read conf_str; do
         continue
     fi
     TRIGGER_DAY_TYPE=`echo ${conf_str} | cut -d',' -f 1`
-    TRIGGER_HOUR=`echo ${conf_str} | cut -d',' -f 2 | sed 's/^[ \t]*//'`
-    TRIGGER_MIN=`echo ${conf_str} | cut -d',' -f 3 | sed 's/^[ \t]*//'`
+    TRIGGER_HOUR=`echo ${conf_str} | cut -d',' -f 2 | sed 's/^[ ]*//'`
+    TRIGGER_MIN=`echo ${conf_str} | cut -d',' -f 3 | sed 's/^[ ]*//'`
 
     case "${TRIGGER_DAY_TYPE}" in
         "WEEK_DAY" )  TRIGGER_DAY_TYPE=0 ;;
@@ -58,7 +58,8 @@ while read conf_str; do
 
     #set send signal type
     if [ ${STARTUP_TIME} -eq 1 ]; then 
-        TRIGGER_MODE=`echo ${conf_str} | cut -d',' -f 4 | sed 's/^[ \t]*//'`
+        TRIGGER_MODE=`echo ${conf_str} | cut -d',' -f 4 | sed 's/^[ ]*//'`
+        break
     fi
 done < ${CONF_FILE}
 
