@@ -12,15 +12,9 @@ import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 
-plt.style.use('ggplot') 
+#plt.style.use('ggplot') 
 
-#%%
-#read data from cvs to pandas data frame
-df = pd.read_csv('aircon_state.txt', names=['time', 'power', 'mode', "temp"])
-df.time = pd.to_datetime(df.time,format='%Y-%m-%dT%H:%M:%S')
-df.time = df.time + dt.timedelta(hours=9)
-df = df.set_index('time')
-
+#function definition
 def calc_optime(df, group_priod) :
     df2 = df.groupby(pd.Grouper(freq=group_priod))
 
@@ -46,17 +40,76 @@ def calc_optime(df, group_priod) :
 
     return optime
 
+#%%
+#read data from cvs to pandas data frame
+df = pd.read_csv('aircon_state.txt', names=['time', 'power', 'mode', "temp"])
+df.time = pd.to_datetime(df.time,format='%Y-%m-%dT%H:%M:%S')
+df.time = df.time + dt.timedelta(hours=9)
+df = df.set_index('time')
+
+df_temp = pd.read_csv('temp.txt', names=['time', 'temp'])
+df_temp.time = pd.to_datetime(df_temp.time,format='%Y-%m-%dT%H:%M:%SZ')
+df_temp.time = df_temp.time + dt.timedelta(hours=9)
+df_temp = df_temp.set_index('time')
+df_temp_1w_mean = df_temp.resample("W").mean().rename(columns={'temp': 'mean'})
+df_temp_1w_max = df_temp.resample("W").max().rename(columns={'temp': 'max'})
+df_temp_1w_min = df_temp.resample("W").min().rename(columns={'temp': 'min'})
+
+df_temp_1w_all = df_temp_1w_mean.join(df_temp_1w_max, how='outer').join(df_temp_1w_min, how='outer')
+print(df_temp_1w_all)
 
 #%%
+#Air-Con Operating time (hours/day)
 ax = calc_optime(df,"1D").plot(kind='area', color=['steelblue', 'lightsteelblue', 'tomato'], stacked=True,linewidth = 0.0)
-#ax.set_xticklabels(optime.index.strftime('%d-%b(%a)'))
+ax.xaxis_date()
 ax.set_ylabel('Operating time (hours/day)')
-plt.savefig("visualize_aircon_uptime_"+str(dt.date.today())+".png")
+#plt.savefig("visualize_aircon_uptime_"+str(dt.date.today())+".png")
 plt.show()
 
-optime = calc_optime(df,"1M")
-ax = optime.plot(kind='bar', color=['steelblue', 'lightsteelblue', 'tomato'], stacked=True,linewidth = 0.0)
-ax.set_xticklabels(optime.index.strftime('%y-%b'))
-ax.set_ylabel('Operating time (hours/month)')
-plt.savefig("visualize_aircon_uptime_month_"+str(dt.date.today())+".png")
+#%%
+#Air-Con Operating time (hours/week)
+w = 7.0
+optime = calc_optime(df,"1W")
+fig, ax = plt.subplots()
+
+sb_cool = ax.bar(optime.index, optime.cool, width=w, color='steelblue')
+sb_dry = ax.bar(optime.index, optime.dry, width=w, color='lightsteelblue')
+sb_warm = ax.bar(optime.index, optime.warm, width=w, color='tomato')
+
+ax.xaxis_date()
+ax.set_ylabel('Operating time (hours/week)')
+plt.legend((sb_cool, sb_dry, sb_warm), ('cool', 'dry', 'warm'))
+plt.title("Air Conditioner Operating time")
+
+fig.autofmt_xdate()
+plt.savefig("visualize_aircon_uptime_week_"+str(dt.date.today())+".png")
 plt.show()
+
+
+#%%
+w = 7.0
+optime = calc_optime(df,"1W")
+fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
+
+ax1.set_title("Air Conditioner Operating time and Room Temperature")
+
+sb_cool = ax1.bar(optime.index, optime.cool, width=w, color='steelblue')
+sb_dry = ax1.bar(optime.index, optime.dry, width=w, color='lightsteelblue')
+sb_warm = ax1.bar(optime.index, optime.warm, width=w, color='tomato')
+
+ax1.legend((sb_cool, sb_dry, sb_warm), ('cool', 'dry', 'warm'))
+ax1.xaxis_date()
+ax1.set_ylabel('Uptime (hours/week)')
+
+line_temp = ax2.plot(df_temp_1w_all.index, df_temp_1w_all["mean"])
+#line_temp2 = ax2.plot(df_temp_1w_all.index, df_temp_1w_all["max"], '--')
+#line_temp3 = ax2.plot(df_temp_1w_all.index, df_temp_1w_all["min"], '--')
+line_temp_fill = ax2.fill_between(df_temp_1w_all.index, df_temp_1w_all["max"], df_temp_1w_all["min"], alpha=0.25)
+ax2.set_ylabel('RT (℃)')
+
+fig.autofmt_xdate()
+plt.savefig("visualize_aircon_uptime_temp_"+str(dt.date.today())+".png")
+plt.show()
+
+
+#%%
