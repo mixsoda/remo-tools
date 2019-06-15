@@ -28,12 +28,13 @@ sleep 5
 cat ${ORIGINAL_FILE_NAME} | head -n 14 | tail -n 1 > ${TODAY_DATA_ONLY_FILE_NAME}
 
 #calc file size
-FILESIZE=`ls -l | grep ${TODAY_DATA_ONLY_FILE_NAME} | sed -e "s/  */ /g" | cut -d' ' -f 5`
+FILESIZE=`ls -l | grep ${TODAY_DATA_ONLY_FILE_NAME} | awk '{print $5}'`
 
 #get kafun data (24=0-9, 25=10-99, 26=100-999, 27=1000-9999)
 case "${FILESIZE}" in
         "24" )  AMOUNT_KAFUN=`cut -b 13 ${TODAY_DATA_ONLY_FILE_NAME}` ;;
-        "25" )  AMOUNT_KAFUN=`cut -b 13-14 ${TODAY_DATA_ONLY_FILE_NAME}` ;;
+        "25" )  AMOUNT_KAFUN=`cut -b 13-14 ${TODAY_DATA_ONLY_FILE_NAME}`
+                KAFUN_FLAG='1' ;;
         "26" )  AMOUNT_KAFUN=`cut -b 13-15 ${TODAY_DATA_ONLY_FILE_NAME}` 
                 KAFUN_FLAG='1' ;;
         "27" )  AMOUNT_KAFUN=`cut -b 13-16 ${TODAY_DATA_ONLY_FILE_NAME}`
