@@ -18,6 +18,9 @@ Nature Remoの標準アプリでは複雑なルール設定ができない。
 「平日で室温が28度以上なら、17:45にエアコンをつける。ただし、祝日は除く。」
 みたいな、きめ細やかなスケジュール設定を行いたい。
 
+### 花粉の飛散量が多い日は空気清浄機を起動
+花粉の飛散量が多い日に自動で空気清浄機を起動したい
+
 ## 特徴
 ### マルチプラットフォーム
 ロギングツールはシェルスクリプトで書かれているので（bashさえ動けば）どこででも動く。
@@ -42,6 +45,8 @@ Python+Pandas+matplotlibで書かれているので改変も簡単
 5. logging/getRemoSensorData.shをcronに登録
 （例：*/15 * * * * /path/to/remo-tool/logging/getRemoSensorData.sh）
 
+/path/to/remo-tool/logging/logs以下にNatureRemoのセンサーから取得したデータが記録される。
+
 ### 可視化ツール
 ツールは全部visualizeディレクトリに入っている。まず、
 /path/to/remo-tool/logging/logs/ディレクトリにある
@@ -53,20 +58,30 @@ Python+Pandas+matplotlibで書かれているので改変も簡単
 をvisualizeディレクトリにコピーする。
 
 Remoのセンサーで取得されたデータを可視化するには、
-```bash
+```sh
 python remo_graph.py
 ```
+もしくは
+```sh
+python remo_graph_simple.py
+```
+
 を実行する。
 
 エアコンの使用時間をグラフ化するには、
-```bash
-python remo_graph.py
+```sh
+python aircon_usage_graph.py
 ```
 を実行する。具体的にどんなグラフが作成されるかは、下の「Gallery」を参照。
 
 
 ### 制御ツール
+#### エアコン
 （準備中）
+
+#### 空気清浄機
+環境省の花粉飛散量予測システムの情報を定期的に自動取得し、花粉の飛散量が多い日は自動的に空気清浄機を起動する。
+[仕組みと使用方法を書いたブログ記事](https://zlog.hateblo.jp/entry/2019/03/19/nature-remo-aircleaner)
 
 ## Gallery
 可視化結果例
