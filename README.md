@@ -104,7 +104,7 @@ python aircon_usage_graph.py
 - [Nature remo API documents](https://developer.nature.global/)
 - [Nature Remoのセンサーデータをひたすら１年間記録した結果をグラフ化してみる](https://zlog.hateblo.jp/entry/2018/11/08/200000)
 
-## Licence
+## License
 These codes are licensed under CC0.
 [![CC0](http://i.creativecommons.org/p/zero/1.0/88x31.png "CC0")](http://creativecommons.org/publicdomain/zero/1.0/deed.ja)
 
