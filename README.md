@@ -81,7 +81,9 @@ python aircon_usage_graph.py
 
 #### 空気清浄機
 環境省の花粉飛散量予測システムの情報を定期的に自動取得し、花粉の飛散量が多い日は自動的に空気清浄機を起動する。
-[仕組みと使用方法を書いたブログ記事](https://zlog.hateblo.jp/entry/2019/03/19/nature-remo-aircleaner)
+以下のブログエントリに仕組みと使用方法を書いた。
+
+[Nature Remoで花粉が多い日に空気清浄機が自動起動するようにする](https://zlog.hateblo.jp/entry/2019/03/19/nature-remo-aircleaner)
 
 ## Gallery
 可視化結果例
@@ -89,20 +91,23 @@ python aircon_usage_graph.py
 
 ![sample_images](https://github.com/mixsoda/remo-tools/blob/master/images/visualize_sensor_data_all.png?raw=true "sample")
 
+実線は平均値で、最低値と最大値の間を半透明の帯で表示している。
+
 直近一週間分だけ拡大してグラフ化した結果。
 
 ![sample_images](https://github.com/mixsoda/remo-tools/blob/master/images/visualize_sensor_data_week.png?raw=true "sample")
 
-一日のエアコン使用時間の変化。
+エアコン使用時間の変化（一週間の積算使用時間）。下のグラフが気温。
 
 ![sample_images](https://github.com/mixsoda/remo-tools/blob/master/images/air-con_optime.png?raw=true "sample")
 
-最近、暖房使い始めた。２年ぐらい記録して比較すると面白いかもしれない。
+全期間分表示しているグラフは、一週間分のデータを平均しスムージングしているので、センサーデータが最低数カ月分無いとよくわからないグラフになるかもしれない。
 
 ## Links
 - [Nature remo](https://nature.global/)
 - [Nature remo API documents](https://developer.nature.global/)
 - [Nature Remoのセンサーデータをひたすら１年間記録した結果をグラフ化してみる](https://zlog.hateblo.jp/entry/2018/11/08/200000)
+- [Nature Remoで花粉が多い日に空気清浄機が自動起動するようにする](https://zlog.hateblo.jp/entry/2019/03/19/nature-remo-aircleaner)
 
 ## License
 These codes are licensed under CC0.
