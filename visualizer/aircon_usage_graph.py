@@ -101,10 +101,8 @@ ax1.legend((sb_cool, sb_dry, sb_warm), ('cool', 'dry', 'warm'))
 ax1.xaxis_date()
 ax1.set_ylabel('Uptime (hours/week)')
 
-line_temp = ax2.plot(df_temp_1w_all.index, df_temp_1w_all["mean"])
-#line_temp2 = ax2.plot(df_temp_1w_all.index, df_temp_1w_all["max"], '--')
-#line_temp3 = ax2.plot(df_temp_1w_all.index, df_temp_1w_all["min"], '--')
-line_temp_fill = ax2.fill_between(df_temp_1w_all.index, df_temp_1w_all["max"], df_temp_1w_all["min"], alpha=0.25)
+line_temp = ax2.plot(df_temp_1w_all.index, df_temp_1w_all["mean"], color="limegreen")
+line_temp_fill = ax2.fill_between(df_temp_1w_all.index, df_temp_1w_all["max"], df_temp_1w_all["min"], alpha=0.25, color="palegreen")
 ax2.set_ylabel('RT (℃)')
 
 fig.autofmt_xdate()

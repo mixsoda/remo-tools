@@ -73,8 +73,8 @@ print(df_il_10min)
 #all
 fig, (ax1, ax2, ax3) = plt.subplots(3, 1, sharex=True)
 cmap = plt.get_cmap("Set2")
-
 ax1.set_title("Sensor data (All period, Temp, Humidity, Illuminance)")
+
 ax1.plot(df_temp_smooth_all.index, df_temp_smooth_all["temp_mean"], color=cmap(1))
 ax1.fill_between(df_temp_smooth_all.index, df_temp_smooth_all["temp_max"], df_temp_smooth_all["temp_min"], alpha=0.3, color=cmap(1))
 ax1.set_ylabel('RT (℃)')
@@ -99,7 +99,23 @@ plt.savefig("visualize_sensor_data_all_"+str(dt.date.today())+".png")
 plt.show()
 
 #last week
-df_lastweek_smooth.plot(subplots=True, title='Nature Remo sensor data (week)')
+fig, (ax1, ax2, ax3) = plt.subplots(3, 1, sharex=True)
+cmap = plt.get_cmap("Set2")
+
+ax1.set_title("Sensor data (Last week, Temp, Humidity, Illuminance)")
+ax1.plot(df_lastweek_smooth.index, df_lastweek_smooth["temp"], color=cmap(1))
+ax1.set_ylabel('RT (℃)')
+ax1.xaxis_date()
+
+ax2.plot(df_lastweek_smooth.index, df_lastweek_smooth["hu"], color=cmap(2))
+ax2.set_ylabel('H (%)')
+ax2.xaxis_date()
+
+ax3.plot(df_lastweek_smooth.index, df_lastweek_smooth["il"], color=cmap(4))
+ax3.set_ylabel('il')
+ax3.xaxis_date()
+
+fig.autofmt_xdate()
 plt.savefig("visualize_sensor_data_week_"+str(dt.date.today())+".png")
 plt.show()
 
