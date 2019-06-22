@@ -24,11 +24,14 @@ il_value=`../lib/parsrj.sh logs/out_rawdata.json | grep "newest_events.il.val" |
 il_updated=`../lib/parsrj.sh logs/out_rawdata.json | grep "newest_events.il.created_at" | cut -d" " -f2`
 temp_value=`../lib/parsrj.sh logs/out_rawdata.json | grep "newest_events.te.val" | cut -d" " -f2`
 temp_updated=`../lib/parsrj.sh logs/out_rawdata.json | grep "newest_events.te.created_at" | cut -d" " -f2`
+mo_value=`../lib/parsrj.sh logs/out_rawdata.json | grep "newest_events.mo.val" | cut -d" " -f2`
+mo_updated=`../lib/parsrj.sh logs/out_rawdata.json | grep "newest_events.mo.created_at" | cut -d" " -f2`
 
 #get last updated time
 temp_lastupdated=`tail -n 1 logs/temp.txt | cut -d"," -f 1`
 hu_lastupdated=`tail -n 1 logs/hu.txt | cut -d"," -f 1`
 il_lastupdated=`tail -n 1 logs/il.txt | cut -d"," -f 1`
+mo_lastupdated=`tail -n 1 logs/mo.txt | cut -d"," -f 1`
 firm_lastupdated=`tail -n 1 logs/firmware.txt | cut -d"," -f 1`
 sensor_lastnum=`tail -n 1 logs/sensor_num.txt | cut -d"," -f 2 | cut -c 2-2`
 
@@ -56,6 +59,9 @@ if [ ${hu_updated} != ${hu_lastupdated} ]; then
 fi
 if [ ${il_updated} != ${il_lastupdated} ]; then
     echo "$il_updated, $il_value" >> logs/il.txt
+fi
+if [ ${mo_updated} != ${mo_lastupdated} ]; then
+    echo "$mo_updated, $mo_value" >> logs/mo.txt
 fi
 if [ ${firm_date} != ${firm_lastupdated} ]; then
     echo "$firm_date, $firm_var" >> logs/firmware.txt
