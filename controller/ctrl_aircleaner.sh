@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # useage ::
-# ctrl_aircleaner (on|off|turbo)
+# ctrl_aircleaner (on|off)
 
 TOKEN=`cat ../token.txt`
 SIGNAL_ID_LIST='../aircleaner_id.txt'

@@ -74,9 +74,11 @@ if [ ${STARTUP_TIME} -eq 1 ] && [ ${TURN_ON_FLAG} -eq 1 ]; then
             sleep 10
             ./ctrl_aircleaner.sh turbo
             echo "[**STARTUP-AIR-CLEANER-TURBO**]" TIME=${NOW} MODE=${TRIGGER_MODE} >> ${LOG_FILE} ;;
-        "auto_off" )
-            ./ctrl_aircleaner.sh auto_off
-            echo "[**ENABLE AUTO-OFF-TIMER**]" TIME=${NOW} MODE=${TRIGGER_MODE} >> ${LOG_FILE} ;;
+        "off" )
+            ./ctrl_aircleaner.sh off
+            echo "[**SHUTDOWN-AIR-CLEANER**]" TIME=${NOW} MODE=${TRIGGER_MODE} >> ${LOG_FILE} ;;
+        * ) echo "[SIGNAL_TYPE_ERROR]" TIME=${NOW}, HOLIDAY=${HOLIDAY}, STARTUP_TIME=${STARTUP_TIME}, TURN_ON_FLAG=${TURN_ON_FLAG}, MODE=${TRIGGER_MODE}  >> ${LOG_FILE}
+            exit ;;
     esac
 fi
 
