@@ -5,3 +5,4 @@ visualizer/*.txt
 visualizer/*.png
 .vscode
 *.json
+.history
