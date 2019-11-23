@@ -51,4 +51,5 @@ ax.set_yticklabels(['Mon', 'Wed', 'Fri', 'Sun'])
 plt.tick_params(which='both', bottom=False, left=False, labelsize=8)
 plt.title("Motion sensor", fontsize=10)
 
+plt.savefig("visualize_motion_data_all_"+str(dt.date.today())+".png")
 plt.show()
