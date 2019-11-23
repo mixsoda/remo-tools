@@ -1,0 +1,87 @@
+#
+# Trigger file
+#
+
+# COOLER SETTING
+- weekday-cooler-up-AM: 
+    Trigger: 
+      DOW:  weekday
+      TIME: "7:45"
+      TEMP: 27C+
+    Execute:
+      TARGET: Air-con
+      MODE: "cool-28C"
+
+- weekday-cooler-up-PM: 
+    Trigger: 
+      DOW:  weekday
+      TIME: "17:45"
+    Execute:
+      TARGET: Air-con
+      MODE: "cool-28C"
+
+- holiday-cooler-up-AM: 
+    Trigger: 
+      DOW:  holiday
+      TIME: "10:00"
+      TEMP: 27C+
+    Execute:
+      TARGET: Air-con
+      MODE: "cool-28C"
+
+#Aircon auto off
+- weekday-aircon-down-AM: 
+    Trigger: 
+      DOW:  weekday
+      TIME: "8:55"
+    Execute:
+      TARGET: Air-con
+      MODE: "off"
+
+- weekday-aircon-down-PM: 
+    Trigger: 
+      DOW:  weekday
+      START-TIME: "0:30"
+      END-TIME: "3:00"
+      MOTION: NO_30m
+    Execute:
+      TARGET: Air-con
+      MODE: "off"
+
+#WARMER SETTING
+- weekday-warmer-up-AM: 
+    Trigger: 
+      DOW:  weekday
+      TIME: "7:45"
+      TEMP: 16C-
+    Execute:
+      TARGET: Air-con
+      MODE: "warm-18C"
+
+- weekday-warmer-up-PM: 
+    Trigger: 
+      DOW:  weekday
+      TIME: "17:45"
+      TEMP: 16C-
+    Execute:
+      TARGET: Air-con
+      MODE: "warm-18C"
+
+- hiliday-warmer-up-PM: 
+    Trigger: 
+      DOW:  holiday
+      TIME: "10:00"
+      TEMP: 16C-
+    Execute:
+      TARGET: Air-con
+      MODE: "warm-18C"
+
+#HUMIDIFIER
+- weekday-humidifier-up-PM: 
+    Trigger: 
+      DOW:  weekday
+      TIME: "17:45"
+      HU: 45H-
+    Execute:
+      TARGET: Air-cleaner
+      MODE: "power_on"

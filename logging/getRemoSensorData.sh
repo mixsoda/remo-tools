@@ -38,11 +38,11 @@ sensor_lastnum=`tail -n 1 logs/sensor_num.txt | cut -d"," -f 2 | cut -c 2-2`
 #check state of air-con
 AIRCON_POWER=`../utils/get_aircon_settings.sh button`
 if [ ${AIRCON_POWER} = "power-off" ]; then 
-    AIRCON_POWER="OFF"
+    AIRCON_POWER="off"
     AIRCON_MODE="NaN"
     AIRCON_TEMP="NaN"
 else
-    AIRCON_POWER="ON"
+    AIRCON_POWER="on"
     AIRCON_MODE=`../utils/get_aircon_settings.sh mode`
     AIRCON_TEMP="NaN"
     if [ ${AIRCON_MODE} == "cool" ] || [ ${AIRCON_MODE} == "warm" ]; then

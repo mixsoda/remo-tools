@@ -6,3 +6,6 @@ visualizer/*.png
 .vscode
 *.json
 .history
+controller/conf/id.yaml
+logging/logs/*.txt
+logging/logs/*.json

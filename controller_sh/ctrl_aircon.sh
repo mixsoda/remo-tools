@@ -27,7 +27,7 @@ fi
 
 
 if [ $# -eq 3 ]; then 
-    TEMPSTR="temperature=${3}&"
+    TEMPSTR="=${3}&"
 fi
 
 echo "command :: ${MODE_NAME}${TEMPSTR}${POWER}"

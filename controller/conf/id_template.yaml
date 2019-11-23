@@ -1,0 +1,17 @@
+#
+# access token and signal id
+#
+# token
+token: Nature-remo API Token here
+
+# pushbullet token (option, if you dont use, remove "push_token")
+push_token: pushbullet token here
+
+# Signal id
+Air-con: 
+  id: your-aircon-id-here
+
+# Air-cleaner (option, just example)
+Air-cleaner:
+  power_on: air-cleaner-poweroff-signalID-here
+  power_off: air-cleaner-poweron-signalID-here
