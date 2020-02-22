@@ -16,6 +16,7 @@
     Trigger: 
       DOW:  weekday
       TIME: "17:45"
+      TEMP: 27C+
     Execute:
       TARGET: Air-con
       MODE: "cool-28C"
@@ -53,34 +54,43 @@
     Trigger: 
       DOW:  weekday
       TIME: "7:45"
-      TEMP: 16C-
+      TEMP: 17C-
     Execute:
       TARGET: Air-con
-      MODE: "warm-18C"
+      MODE: "warm-19C"
 
 - weekday-warmer-up-PM: 
     Trigger: 
       DOW:  weekday
       TIME: "17:45"
-      TEMP: 16C-
+      TEMP: 17C-
     Execute:
       TARGET: Air-con
-      MODE: "warm-18C"
+      MODE: "warm-19C"
 
-- hiliday-warmer-up-PM: 
+- hiliday-warmer-up-AM: 
     Trigger: 
       DOW:  holiday
       TIME: "10:00"
-      TEMP: 16C-
+      TEMP: 17C-
     Execute:
       TARGET: Air-con
-      MODE: "warm-18C"
+      MODE: "warm-19C"
 
 #HUMIDIFIER
 - weekday-humidifier-up-PM: 
     Trigger: 
       DOW:  weekday
-      TIME: "17:45"
+      TIME: "17:40"
+      HU: 45H-
+    Execute:
+      TARGET: Air-cleaner
+      MODE: "power_on"
+
+- hiliday-humidifier-up-AM: 
+    Trigger: 
+      DOW:  holiday
+      TIME: "9:50"
       HU: 45H-
     Execute:
       TARGET: Air-cleaner
