@@ -30,7 +30,7 @@ aircon_file = "../logging/logs/aircon_state.txt"
 
 
 #global setting
-execute_interval = 5 #min
+execute_interval = 4 #min
 
 def load_yaml(file_path):
     with open(file_path) as file:
@@ -252,13 +252,13 @@ def main():
                                     res = send_aircon_signal(token, id_list[target_app]["id"], "off")
                                     if "push_token" in id_list : send_pushmessage(id_list["push_token"], res, "Air-con : Power off\ncmd:"+cmd_name)
 
-                        elif (target_mode == "cool") or (target_mode == "warm") or (target_mode == "dry") :
+                        elif (target_aircon_mode == "cool") or (target_aircon_mode == "warm") or (target_aircon_mode == "dry") :
                             if (current_aircon_mode != target_aircon_mode) or (current_aircon_temp != target_aircon_temp) :
                                 print("** SEND SIGNAL (", cmd_name, ") Command=", cmd[cmd_name]["Execute"], "**")
                                 executed_list[target_app] = True
                                 if not DRY_RUN :
                                     res = send_aircon_signal(token, id_list[target_app]["id"], "on", target_aircon_mode, target_aircon_temp)
-                                    if "push_token" in id_list : send_pushmessage(id_list["push_token"], res, "Air-con : "+str(target_aircon_mode)+"\ntemp="+str(target_aircon_temp)+"\ncmd:"+cmd_name)
+                                    if "push_token" in id_list : send_pushmessage(id_list["push_token"], res, "Air-con : "+str(target_mode)+"\ncmd:"+cmd_name)
                         
                     else:
                         print("** SEND SIGNAL (", cmd_name, ") Command=", cmd[cmd_name]["Execute"], "**")
