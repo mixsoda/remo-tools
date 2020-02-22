@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 
 #read data from cvs to pandas data frame
-df_mo = pd.read_csv('mo.txt', names=['time', 'motion'])
+df_mo = pd.read_csv('../logging/logs/mo.txt', names=['time', 'motion'])
 df_mo.time = pd.to_datetime(df_mo.time,format='%Y-%m-%dT%H:%M:%SZ')
 df_mo.time = df_mo.time + dt.timedelta(hours=9)
 df_mo = df_mo.set_index('time')
@@ -32,6 +32,7 @@ df_mo_pivot.fillna(0, inplace=True)
 print(df_mo_pivot)
 
 #%%
+plt.figure(figsize=(8.5,3))
 plt.imshow(df_mo_pivot, cmap="YlGn")
 ax = plt.gca()
 
@@ -51,5 +52,6 @@ ax.set_yticklabels(['Mon', 'Wed', 'Fri', 'Sun'])
 plt.tick_params(which='both', bottom=False, left=False, labelsize=8)
 plt.title("Motion sensor", fontsize=10)
 
+plt.tight_layout()
 plt.savefig("visualize_motion_data_all_"+str(dt.date.today())+".png")
 plt.show()

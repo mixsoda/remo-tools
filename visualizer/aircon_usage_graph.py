@@ -12,7 +12,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 
-#plt.style.use('ggplot') 
+#plt.style.use('ggplot')
 
 #function definition
 def calc_optime(df, group_priod) :
@@ -42,12 +42,12 @@ def calc_optime(df, group_priod) :
 
 #%%
 #read data from cvs to pandas data frame
-df = pd.read_csv('aircon_state.txt', names=['time', 'power', 'mode', "temp"])
+df = pd.read_csv('../logging/logs/aircon_state.txt', names=['time', 'power', 'mode', "temp"])
 df.time = pd.to_datetime(df.time,format='%Y-%m-%dT%H:%M:%S')
 df.time = df.time + dt.timedelta(hours=9)
 df = df.set_index('time')
 
-df_temp = pd.read_csv('temp.txt', names=['time', 'temp'])
+df_temp = pd.read_csv('../logging/logs/temp.txt', names=['time', 'temp'])
 df_temp.time = pd.to_datetime(df_temp.time,format='%Y-%m-%dT%H:%M:%SZ')
 df_temp.time = df_temp.time + dt.timedelta(hours=9)
 df_temp = df_temp.set_index('time')

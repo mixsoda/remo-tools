@@ -16,15 +16,15 @@ import matplotlib.dates as mdates
 plt.style.use('dark_background') 
 
 #read data from cvs to pandas data frame
-df_temp = pd.read_csv('temp.txt', names=['time', 'temp'])
+df_temp = pd.read_csv('../logging/logs/temp.txt', names=['time', 'temp'])
 df_temp.time = pd.to_datetime(df_temp.time,format='%Y-%m-%dT%H:%M:%SZ')
 df_temp.time = df_temp.time + dt.timedelta(hours=9)
 
-df_hu = pd.read_csv('hu.txt', names=['time', 'hu'])
+df_hu = pd.read_csv('../logging/logs/hu.txt', names=['time', 'hu'])
 df_hu.time = pd.to_datetime(df_hu.time,format='%Y-%m-%dT%H:%M:%SZ')
 df_hu.time = df_hu.time + dt.timedelta(hours=9)
 
-df_il = pd.read_csv('il.txt', names=['time', 'il'])
+df_il = pd.read_csv('../logging/logs/il.txt', names=['time', 'il'])
 df_il.time = pd.to_datetime(df_il.time,format='%Y-%m-%dT%H:%M:%SZ')
 df_il.time = df_il.time + dt.timedelta(hours=9)
 
